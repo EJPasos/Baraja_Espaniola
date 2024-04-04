@@ -48,7 +48,7 @@ public class Card {
                 rankString = "Sota";
                 break;
             case 11:
-                rankString = "Caballo2";
+                rankString = "Caballo3";
                 break;
             case 12:
                 rankString = "Rey";
