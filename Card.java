@@ -32,6 +32,7 @@ public class Card {
         return faceUp;
     }
 
+
     public void setFaceUp(boolean faceUp) {
         this.faceUp = faceUp;
     }
@@ -48,7 +49,7 @@ public class Card {
                 rankString = "Sota";
                 break;
             case 11:
-                rankString = "Caballo3";
+                rankString = "Caballo";
                 break;
             case 12:
                 rankString = "Rey";
