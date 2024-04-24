@@ -3,24 +3,45 @@ import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import javax.swing.*;
 import javax.imageio.ImageIO;
 
-public class CardCanvas extends JPanel {
+//Esta clase lo que hace es comprobar el funcionamiento del canvas y la creacion de las cartas
+public class CardCanvas extends JPanel
+{
     private ArrayList<Card> cards;
     private BufferedImage[] cardImages;
+    private HashMap<String, Integer> suitIndexMap;
+    private BufferedImage pokerTableImage;
 
     public CardCanvas() {
         cards = new ArrayList<>();
-        setPreferredSize(new Dimension(800, 600)); // Tamaño del lienzo
+        setPreferredSize(new Dimension(1000, 600));
+
+        suitIndexMap = new HashMap<>();
+        suitIndexMap.put("oros", 0);
+        suitIndexMap.put("copas", 1);
+        suitIndexMap.put("espadas", 2);
+        suitIndexMap.put("bastos", 3);
 
         //Cargamos las imagenes
         cardImages = new BufferedImage[4];
         try {
-            cardImages[0] = ImageIO.read(new File("suits/oros.png"));
+            cardImages[0] = ImageIO.read(new File("suits/bastos.png"));
             cardImages[1] = ImageIO.read(new File("suits/copas.png"));
             cardImages[2] = ImageIO.read(new File("suits/espadas.png"));
-            cardImages[3] = ImageIO.read(new File("suits/bastos.png"));
+            cardImages[3] = ImageIO.read(new File("suits/oros.png"));
+        }
+        catch (IOException e)
+        {
+            e.printStackTrace();
+        }
+
+        //aqui se carga la imagen del poker
+        try
+        {
+            pokerTableImage = ImageIO.read(new File("suits/istockphoto-1218355494-612x612.jpg"));
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -28,21 +49,14 @@ public class CardCanvas extends JPanel {
 
     public void addCard(Card card) {
         cards.add(card);
-        repaint(); // Vuelve a dibujar el lienzo con la nueva carta
+        repaint();
     }
 
-    private int getSuitIndex(String suit) {
-        switch (suit) {
-            case "oros":
-                return 0;
-            case "copas":
-                return 1;
-            case "espadas":
-                return 2;
-            case "bastos":
-                return 3;
-            default:
-                return -1;
+    public void printCardsArray(ArrayList<Card> cards) {
+        System.out.println("Cartas: ");
+        this.cards = cards;
+        for (Card card : cards) {
+            System.out.println(card);
         }
     }
 
@@ -51,12 +65,17 @@ public class CardCanvas extends JPanel {
         super.paintComponent(g);
         int x = 50;
         int y = 50;
+
+        if (pokerTableImage != null) {
+            g.drawImage(pokerTableImage, 0, 0, getWidth(), getHeight(), this);
+        }
+
         Color backgroundColor = new Color(250, 239, 193);
 
-        // Dibujar las cartas en el lienzo
         for (Card card : cards) {
             if (card.isFaceUp()) {
-                int suitIndex = getSuitIndex(card.getSuit());
+                String suit = card.getSuit();
+                int suitIndex = suitIndexMap.getOrDefault(suit, -1);
 
                 if (suitIndex != -1 && suitIndex < cardImages.length && cardImages[suitIndex] != null) {
                     g.setColor(backgroundColor);
@@ -75,17 +94,18 @@ public class CardCanvas extends JPanel {
                     g.setFont(new Font(g.getFont().getFontName(), Font.PLAIN, 80));
                     g.drawString(card.toString(), x + 10, y + 20);
                 }
-            } else {
+            }
+            else
+            {
                 g.setColor(Color.BLUE);
                 g.fillRect(x, y, 100, 150);
                 g.setColor(Color.WHITE);
                 g.drawRect(x, y, 100, 150);
             }
-            x += 120; // Espaciado horizontal entre cartas
+            x += 120;
         }
     }
 
-    // Método main para probar la clase
     public static void main(String[] args) {
         JFrame frame = new JFrame("Card Canvas");
         CardCanvas canvas = new CardCanvas();
@@ -94,10 +114,12 @@ public class CardCanvas extends JPanel {
         frame.pack();
         frame.setVisible(true);
 
-        // Agregar algunas cartas al lienzo
+        //probamos cartas
         canvas.addCard(new Card("oros", 7, true));
         canvas.addCard(new Card("copas", 10, true));
-        canvas.addCard(new Card("espadas", 1, false));
-        canvas.addCard(new Card("bastos", 11, true));
+        canvas.addCard(new Card("espadas", 1, true));
+        canvas.addCard(new Card("bastos", 11, false));
     }
+
+   //public boolean
 }
